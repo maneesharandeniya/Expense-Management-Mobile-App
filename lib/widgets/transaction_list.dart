@@ -1,3 +1,4 @@
+import './transaction_item.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/transaction.dart';
@@ -8,7 +9,7 @@ class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
   final Function(String) removeItem;
 
-  TransactionList(this.transactions, this.removeItem);
+  const TransactionList(this.transactions, this.removeItem);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class TransactionList extends StatelessWidget {
                     "No transaction added yet!",
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Container(
@@ -33,49 +34,9 @@ class TransactionList extends StatelessWidget {
             })
           : ListView.builder(
               itemBuilder: (ctx, index) {
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: FittedBox(
-                          child: Text("\$${transactions[index].amount}"),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      "${transactions[index].title}",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    subtitle: Text(
-                      DateFormat.yMMMd().format((transactions[index].date)),
-                    ),
-                    trailing: MediaQuery.of(context).size.width > 400
-                        ? TextButton.icon(
-                            onPressed: () {
-                              removeItem(transactions[index].id);
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Theme.of(context).errorColor,
-                            ),
-                            label: Text(
-                              "delete",
-                              style: TextStyle(
-                                  color: Theme.of(context).errorColor),
-                            ),
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.delete),
-                            color: Theme.of(context).errorColor,
-                            onPressed: () {
-                              removeItem(transactions[index].id);
-                            },
-                          ),
-                  ),
+                return TransactionItem(
+                  transaction: transactions[index],
+                  removeItem: removeItem,
                 );
               },
               itemCount: transactions.length,
