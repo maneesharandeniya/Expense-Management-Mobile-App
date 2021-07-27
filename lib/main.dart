@@ -94,6 +94,44 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  List<Widget> _buildLandscape(
+    Widget chart,
+    Widget transactionList,
+  ) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Show Chart"),
+          Switch.adaptive(
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              })
+        ],
+      ),
+      _showChart ? chart : transactionList,
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(
+    MediaQueryData mediaQueryData,
+    AppBar appBar,
+    Widget transactionList,
+  ) {
+    return [
+      Container(
+          height: (mediaQueryData.size.height -
+                  appBar.preferredSize.height -
+                  mediaQueryData.padding.top) *
+              0.3,
+          child: Chart(_recentTransactions)),
+      transactionList,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context);
@@ -137,28 +175,16 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Show Chart"),
-                  Switch.adaptive(
-                      value: _showChart,
-                      onChanged: (val) {
-                        setState(() {
-                          _showChart = val;
-                        });
-                      })
-                ],
+              ..._buildLandscape(
+                chart,
+                transactionList,
               ),
             if (!isLandscape)
-              Container(
-                  height: (mediaQueryData.size.height -
-                          appBar.preferredSize.height -
-                          mediaQueryData.padding.top) *
-                      0.3,
-                  child: Chart(_recentTransactions)),
-            if (!isLandscape) transactionList,
-            if (isLandscape) _showChart ? chart : transactionList,
+              ..._buildPortraitContent(
+                mediaQueryData,
+                appBar,
+                transactionList,
+              ),
           ],
         ),
       ),
